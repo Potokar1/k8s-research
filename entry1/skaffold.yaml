@@ -1,0 +1,9 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: civ
+deploy:
+  helm:
+    releases:
+    - name: civ
+      chartPath: charts/civ

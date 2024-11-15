@@ -1,0 +1,12 @@
+# _config.yml
+
+title: Kubernetes Civilization Simulation
+description: Follow along as we build a civilization simulation using Kubernetes concepts.
+theme: jekyll-theme-minimal
+
+# Exclude folders from Jekyll processing (e.g., your code directories)
+exclude:
+  - entry*
+  - .gitignore
+  - README.md
+  - Makefile

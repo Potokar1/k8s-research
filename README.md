@@ -6,7 +6,7 @@ Repository for personal Kubernetes research and write-ups.
 
 Explore Kubernetes concepts by building a civilization simulation.
 
-I will attempt to map Kubernetes concepts using a real-world analogies while building a runnable simulation.
+I will attempt to map Kubernetes concepts using real-world analogies while building a runnable simulation.
 
 ## Project Structure
 
@@ -16,6 +16,8 @@ There will be a separate directory for each entry that will be self-contained an
 
 Each entry will have a `README.md` file that explains how to "run" the entry.  
 The write-up for each entry will be in a separate markdown file in the parent `docs/` directory.
+
+Visit the [github pages](https://potokar1.github.io/k8s-research/) for this project.
 
 ## Pre-requisites
 

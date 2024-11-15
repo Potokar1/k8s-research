@@ -6,7 +6,7 @@
 
 Explore Kubernetes concepts by building a civilization simulation.
 
-I will attempt to map Kubernetes concepts using a real-world analogies while building a runnable simulation.
+I will attempt to map Kubernetes concepts using real-world analogies while building a runnable simulation.
 
 ### What is Kubernetes?
 

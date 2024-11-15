@@ -36,6 +36,7 @@ The civilization analogy is that kingdoms(Namespaces) are isolated from each oth
 #### KinD
 
 I will be using [KinD](https://kind.sigs.k8s.io/) (Kubernetes in Docker) to create a local Kubernetes cluster.  
+KinD allows us to run Kubernetes clusters locally using Docker containers.  
 For this entry, we are not concerned with what KinD is doing under the hood or what is created when we run `kind create cluster`.  
 We will be using the default KinD configuration for now and work with the cluster that is created.
 
@@ -44,9 +45,9 @@ The command we will rely on is `kind create cluster --name=civ-cluster` which cr
 
 #### Helm
 
-I will be using [Helm](https://helm.sh/), specifically Helm Charts` to manage the installation of the kubernetes concepts that we will be exploring.  
-Helm charts are a way to define kubernetes resources in a templated way.  
-Our current helm chart directory structure is as follows:
+I will be using [Helm](https://helm.sh/), specifically `Helm Charts` to manage the installation of the Kubernetes concepts that we will be exploring.  
+Helm charts are a way to define Kubernetes resources in a templated way.  
+Our current Helm chart directory structure is as follows:
 
 ```shell
 charts/
@@ -57,9 +58,9 @@ charts/
       namespace.yaml
 ```
 
-The `namespace.yaml` file is a kubernetes resource definition for a namespace.  
+The `namespace.yaml` file is a Kubernetes resource definition for a namespace.  
 It references the `values.yaml` file for the namespace name.  
-When we install the helm chart, the files in the `templates/` directory are rendered (templated) and applied to the Kubernetes cluster.  
+When we install the Helm chart, the files in the `templates/` directory are rendered (templated) and applied to the Kubernetes cluster.  
 
 Currently, the only resource we are creating is a namespace which when rendered and applied to the cluster will add one kingdom(namespace) to our civilization simulation:
 
@@ -72,12 +73,12 @@ metadata:
 
 ### Skaffold
 
-I will be using [Skaffold](https://skaffold.dev/) to automate the deployment of our helm charts.  
+I will be using [Skaffold](https://skaffold.dev/) to automate the deployment of our Helm charts.  
 Skaffold is a tool that automates the workflow for building, pushing, and deploying applications to a Kubernetes cluster.  
 This tool allows us to define a repeatable deployment process that can be run with a single command.  
 
 To use Skaffold, we define a `skaffold.yaml` file in our first entry.  
-Right now, the only thing skaffold is doing is deploying our helm chart to the Kubernetes cluster.  
+Right now, the only thing Skaffold is doing is deploying our Helm chart to the Kubernetes cluster.  
 
 ```yaml
 apiVersion: skaffold/v4beta11
@@ -91,7 +92,7 @@ deploy:
       chartPath: charts/civ
 ```
 
-By referencing the helm chart in the `skaffold.yaml` file, we can use `skaffold run` to deploy the helm chart to the Kubernetes cluster with a single command.
+By referencing the Helm chart in the `skaffold.yaml` file, we can use `skaffold run` to deploy the Helm chart to the Kubernetes cluster with a single command.
 
 ### Golang
 

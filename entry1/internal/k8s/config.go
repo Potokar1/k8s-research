@@ -23,6 +23,10 @@ func GetClientSet() *kubernetes.Clientset {
 	}
 
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		// panic as we can't continue without a clientset and we should be able to use in-cluster/default config
+		panic(err)
+	}
 
 	// create clientset
 	clientset, err := kubernetes.NewForConfig(config)

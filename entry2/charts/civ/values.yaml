@@ -1,0 +1,14 @@
+kingdoms:
+  names:
+    - kingdom-of-foobar
+
+towns:
+  - name: town-of-peas
+    kingdom: kingdom-of-foobar
+    workers:
+      - name: woodworker
+        message: "I made 1 wood"
+      - name: ironworker
+        message: "I made 1 iron"
+      - name: craftsman
+        message: "I made 1 good"

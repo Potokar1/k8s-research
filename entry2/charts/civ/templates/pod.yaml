@@ -1,0 +1,14 @@
+{{- range .Values.towns }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .name }}
+  namespace: {{ .kingdom }}
+spec:
+    containers:
+    {{- range .workers }}
+    - name: {{ .name }}
+      image: busybox
+      command: ['sh', '-c', 'while true; do echo "$(date): {{ .message }}"; sleep 5; done']
+    {{- end }}
+{{- end }}

@@ -159,3 +159,4 @@ It does this by requesting the list of namespaces from the Kubernetes API.
 I plan on utilizing `clientset` to interact with the Kubernetes API in the future as well.
 
 [Back to Home](index.md)
+[Next Entry](entry2.md)

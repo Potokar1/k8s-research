@@ -123,5 +123,5 @@ Pods, like Towns, are collections of Containers that share resources and work to
 Containers, like Citizens, are individual workers performing specific roles within a Pod.  
 This analogy illustrates how Kubernetes orchestrates applications by grouping containers and managing them efficiently.
 
-[Previous Entry](entry1.md)
-[Back to Home](index.md)
+[Previous Entry](entry1.md)  
+[Back to Home](index.md)  

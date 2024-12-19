@@ -125,3 +125,4 @@ This analogy illustrates how Kubernetes orchestrates applications by grouping co
 
 [Previous Entry](entry1.md)  
 [Back to Home](index.md)  
+[Next Entry](entry3.md)  

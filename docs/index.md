@@ -25,3 +25,4 @@ The write-up for each entry will be in a separate markdown file in the parent `d
 
 - [Entry 1: Setting Up Kingdoms (Namespaces)](entry1.md)
 - [Entry 2: Pods as Towns and Containers as Citizens](entry2.md)
+- [Entry 3: RETCON: Towns as Deployments and Pods as Shops](entry3.md)

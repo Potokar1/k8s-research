@@ -1,0 +1,60 @@
+{{- range .Values.kingdoms }}
+{{- $kingdom := .name }}
+{{- range .towns }}
+{{- $town := .name }}
+{{- range .shops }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .type }}
+  namespace: {{ $kingdom }}
+  labels:
+    town: {{ $town }}
+    shop: {{ .type }}
+spec:
+  replicas: {{ .replicas }}
+  selector:
+    matchLabels:
+      town: {{ $town }}
+      shop: {{ .type }}
+  template:
+    metadata:
+      labels:
+        town: {{ $town }}
+        shop: {{ .type }}
+    spec:
+      containers:
+        - name: {{ .type }}
+          image: ghcr.io/potokar1/k8s-research/entry3/worker # custom image build with ko during skaffold dev
+          imagePullPolicy: Never
+          args:
+            - serve
+            - /config/directions.json
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http
+            initialDelaySeconds: 1
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .type }}-directions
+---
+{{- end }}
+{{- end }}
+{{- end }}

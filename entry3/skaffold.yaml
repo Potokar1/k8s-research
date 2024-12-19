@@ -1,0 +1,20 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: civ
+build:
+  artifacts:
+    - image: ghcr.io/potokar1/k8s-research/entry3/worker
+      ko:
+        main: ./cmd/civ
+        dependencies:
+          paths:
+            - "**/*.go"
+            - go.mod
+  local:
+    useBuildkit: true
+deploy:
+  helm:
+    releases:
+    - name: civ
+      chartPath: charts/civ

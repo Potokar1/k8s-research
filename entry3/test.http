@@ -1,0 +1,91 @@
+@localURL=http://localhost:8080
+
+### live
+GET {{localURL}}/live
+
+### Ready
+GET {{localURL}}/ready
+
+### Inventory
+GET {{localURL}}/inventory
+
+### Sell
+POST {{localURL}}/sell
+
+{
+    "item": "wood",
+    "quantity": 5
+}
+
+@localhost=http://localhost
+@craftsman=8080
+### live
+GET {{localhost}}:{{craftsman}}/live
+
+### Ready
+GET {{localhost}}:{{craftsman}}/ready
+
+### Inventory
+GET {{localhost}}:{{craftsman}}/inventory
+
+### Sell
+POST {{localhost}}:{{craftsman}}/sell
+
+{
+    "item": "axe",
+    "quantity": 5
+}
+
+@ironworker=8081
+### live
+GET {{localhost}}:{{ironworker}}/live
+
+### Ready
+GET {{localhost}}:{{ironworker}}/ready
+
+### Inventory
+GET {{localhost}}:{{ironworker}}/inventory
+
+### Sell
+POST {{localhost}}:{{ironworker}}/sell
+
+{
+    "item": "iron",
+    "quantity": 5
+}
+
+@stoneworker=8082
+### live
+GET {{localhost}}:{{stoneworker}}/live
+
+### Ready
+GET {{localhost}}:{{stoneworker}}/ready
+
+### Inventory
+GET {{localhost}}:{{stoneworker}}/inventory
+
+### Sell
+POST {{localhost}}:{{stoneworker}}/sell
+
+{
+    "item": "stone",
+    "quantity": 5
+}
+
+@woodworker=8083
+### live
+GET {{localhost}}:{{woodworker}}/live
+
+### Ready
+GET {{localhost}}:{{woodworker}}/ready
+
+### Inventory
+GET {{localhost}}:{{woodworker}}/inventory
+
+### Sell
+POST {{localhost}}:{{woodworker}}/sell
+
+{
+    "item": "wood",
+    "quantity": 5
+}

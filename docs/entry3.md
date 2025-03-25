@@ -14,8 +14,8 @@ I will explore the changes that I made to the analogy in this entry.
 
 [Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) are key-value pairs that are attached to Kubernetes objects.  
 Each object (such as pods, services, deployments) can be assigned labels that can be used to select objects based on those labels.  
-This grouping fits well with how we can group objects in our analogy.  
-The labels are arbitrary and can be set based on a set of rules that kubernetes provides.  
+This pairing fits well with how we can group objects in our analogy.  
+The labels are arbitrary and adhere to a set of rules that kubernetes provides.  
 As long as the labels are consistent, we can use them to group objects together.
 
 Labels and Selectors have a LIST and WATCH API that we will use to designate objects as part of a group.
@@ -38,7 +38,7 @@ Any object can be filtered or selected by matching at least 1 of the labels abov
 [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) are a way to manage the creation and scaling of Pods in Kubernetes.
 
 The deployment is the "source of truth" for the Pods that it manages.  
-It is a declarative way to define the desired state of the Pods and the deployment controller will continuously attempt to move the current state of the Pods to the desired state.
+It is a declarative way to define the desired state of the Pods and a deployment controller will continuously attempt to move the current state of the Pods to the desired state.
 
 An important concept of Deployments is that they are scalable.  
 They can be increased or decreased the amount of pods they manage based on a set "replica" count.  
@@ -49,9 +49,9 @@ Deployments define a "template" that is used to create the Pods associated with 
 Each pod is created based on the template and is continuously watched and managed by the deployment.  
 We are also able to provide metadata (such as labels) to the pods defined by the deployment's template.  
 
-### Deployments as Towns
+### Deployments as a Town
 
-Due to the scalability of Deployments, I have decided to change the analogy to have Deployments represent Towns.  
+Due to the scalability of Deployments, I have decided to change the analogy to have a group of Deployments represent a Town.  
 In combination with a Label `town=<name of town>` we can group deployments together that are part of the same town.  
 The collection of Deployments with the same `town` label are what makes up a town in our analogy.  
 This allows us to operate and manage all kubernetes objects that are part of the town by selecting on the `town` label.
@@ -63,6 +63,7 @@ This allows us to operate and manage all kubernetes objects that are part of the
 I have decided to change the analogy of Pods to Shops.  
 Previously, I had Pods as Towns, but I believe that the Deployments + Labels = Towns analogy is a better fit.  
 Since the deployments manage the pods, the pods can be thought of as shops that are part of a town.  
+The deployments are like a group of owners that can manage multiple shops in a town.  
 The pods are given labels to group them together as part of a town, which can enable us to manage them as a group.  
 
 ### Why is this better?
@@ -70,7 +71,7 @@ The pods are given labels to group them together as part of a town, which can en
 Similar to the ephemeral nature of shops in the real world, coming and going based on demand, pods can be created and destroyed by altering the deployment.  
 If a certain resource is in high demand, we can create another "clone" of that shop by increasing the replica count of the deployment.  
 
-Having the container image as the "set of workers and tools" that the shop has also fits well with this analogy.  
+I also prefer viewing a pod's container image as the "set of workers and tools" that the shop needs.  
 
 ## Containers - Revisited
 

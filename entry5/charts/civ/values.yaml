@@ -1,0 +1,47 @@
+kingdoms:
+  - name: kingdom-of-foobar
+    towns:
+      - name: simple-town
+        shops:
+          - type: woodworker
+            replicas: 1
+            directions:
+              - product: "wood"
+                amount: 10
+                minimum: 1
+                interval: 5
+          - type: ironworker
+            replicas: 1
+            directions:
+              - product: "iron"
+                productInputList:
+                  - product: "stone"
+                    store: "http://stoneworker"
+                    amount: 3
+                  - product: "wood"
+                    store: "http://woodworker"
+                    amount: 10
+                amount: 1
+                minimum: 1
+                interval: 10
+          - type: stoneworker
+            replicas: 1
+            directions:
+              - product: "stone"
+                amount: 3
+                minimum: 1
+                interval: 5
+          - type: craftsman
+            replicas: 1
+            directions:
+              - product: "axe"
+                productInputList:
+                  - product: "wood"
+                    store: "http://woodworker"
+                    amount: 8
+                  - product: "iron"
+                    store: "http://ironworker"
+                    amount: 4
+                amount: 1
+                minimum: 1
+                interval: 15

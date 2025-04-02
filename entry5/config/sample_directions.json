@@ -1,0 +1,15 @@
+[
+    {
+        "product": "metal",
+        "productInputs": [
+            {
+                "product": "rock",
+                "store": "http://quarry",
+                "amount": 3
+            }
+        ],
+        "amount": 2,
+        "interval": 1,
+        "minimum": 1
+    }
+]

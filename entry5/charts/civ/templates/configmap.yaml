@@ -1,0 +1,19 @@
+{{- range .Values.kingdoms }}
+{{- $kingdom := .name }}
+{{- range .towns }}
+{{- $town := .name }}
+{{- range .shops }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .type }}-directions
+  namespace: {{ $kingdom }}
+  labels:
+    town: {{ $town }}
+    shop: {{ .type }}
+data:
+  directions.json: {{ .directions | default dict | toJson | quote }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

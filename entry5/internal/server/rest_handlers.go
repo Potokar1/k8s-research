@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/Potokar1/k8s-research/entry4/internal/worker"
+	"github.com/Potokar1/k8s-research/entry5/internal/worker"
 )
 
 type Server struct {

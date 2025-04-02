@@ -292,3 +292,4 @@ The increase in complexity will be interesting to explore as there will be more 
 
 [Previous Entry](entry2.md)  
 [Back to Home](index.md)
+[Next Entry](entry4.md)  

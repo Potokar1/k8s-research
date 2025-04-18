@@ -291,5 +291,5 @@ The addition of the custom container image also gives this project much more con
 The increase in complexity will be interesting to explore as there will be more moving parts to manage.
 
 [Previous Entry](entry2.md)  
-[Back to Home](index.md)
+[Back to Home](index.md)  
 [Next Entry](entry4.md)  

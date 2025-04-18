@@ -116,4 +116,4 @@ In future entries, I hope to expand on services by enabling shops to scale with 
 I also hope to add richer ways to interact with the shops, such as a useful interface for watching the activity of a shop, town, or entire kingdom.
 
 [Previous Entry](entry3.md)  
-[Back to Home](index.md)
+[Back to Home](index.md)  

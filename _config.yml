@@ -4,9 +4,6 @@ title: Kubernetes Civilization Simulation
 description: Follow along as we build a civilization simulation using Kubernetes concepts.
 theme: jekyll-theme-minimal
 
-baseurl: "/k8s-research"
-url:    "https://potokar1.github.io"
-
 # Exclude folders from Jekyll processing (e.g., your code directories)
 exclude:
   - entry*

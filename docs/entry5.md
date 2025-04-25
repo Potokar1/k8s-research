@@ -174,7 +174,7 @@ for event := range watch.ResultChan() {
 
 Then I can parse the inventory data from the pod's annotations and print it to the terminal.
 
-![Terminal Demo](../assets/session5.gif)
+![Terminal Demo]({{ site.baseurl }}/assets/session5.gif)
 
 ## Conclusion
 

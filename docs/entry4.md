@@ -117,3 +117,4 @@ I also hope to add richer ways to interact with the shops, such as a useful inte
 
 [Previous Entry](entry3.md)  
 [Back to Home](index.md)  
+[Next Entry](entry5.md)  

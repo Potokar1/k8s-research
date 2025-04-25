@@ -20,6 +20,7 @@ func NewCivCmd() *cobra.Command {
 	cmd.AddCommand(NewShopsCmd())
 	cmd.AddCommand(NewLogsCmd())
 	cmd.AddCommand(NewServeCmd())
+	cmd.AddCommand(NewWatchCmd())
 
 	return cmd
 }

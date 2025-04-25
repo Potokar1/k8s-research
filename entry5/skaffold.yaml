@@ -14,6 +14,7 @@ build:
   local:
     useBuildkit: true
 deploy:
+  statusCheck: false
   helm:
     releases:
     - name: civ

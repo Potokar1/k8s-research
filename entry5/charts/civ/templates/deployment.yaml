@@ -23,6 +23,7 @@ spec:
         town: {{ $town }}
         shop: {{ .type }}
     spec:
+      serviceAccountName: civ-worker # use the service account we created
       containers:
         - name: {{ .type }}
           image: ghcr.io/potokar1/k8s-research/entry5/worker # custom image build with ko during skaffold dev
@@ -30,6 +31,13 @@ spec:
           args:
             - serve
             - /config/directions.json
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # Downward API! very cool
+            - name: POD_NAMESPACE
+              value: {{ $kingdom }}
           ports:
             - name: http
               containerPort: 8080

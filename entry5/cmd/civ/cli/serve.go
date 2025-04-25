@@ -43,7 +43,14 @@ func NewServeCmd() *cobra.Command {
 				slog.InfoContext(ctx, "direction", "index", i, "product", d.Product, "amount", d.Amount, "interval", d.Interval,
 					"inputs", d.ProductInputList)
 			}
-			worker := worker.NewWorker(directions)
+
+			// get pod namespace and name from environment variables
+			namespace := os.Getenv("POD_NAMESPACE")
+			slog.InfoContext(ctx, "POD_NAMESPACE", "namespace", namespace)
+			name := os.Getenv("POD_NAME")
+			slog.InfoContext(ctx, "POD_NAME", "name", name)
+
+			worker := worker.NewWorker(namespace, name, directions)
 			go worker.Work(ctx)
 
 			// create the server

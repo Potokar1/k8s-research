@@ -11,12 +11,18 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/Potokar1/k8s-research/entry5/internal/k8s"
 )
 
 type Worker struct {
-	mu         sync.Mutex
-	Inventory  map[string]int
+	kingdom string // Kingdom is the namespace the worker belongs to
+	name    string // Name is the name of the pod
+
 	directions []Direction
+
+	inventoryLock sync.RWMutex
+	inventory     map[string]int
 }
 
 type ProductInput struct {
@@ -34,11 +40,66 @@ type Direction struct {
 	Interval         int            // Interval is the rate in seconds at which the product should be produced
 }
 
-func NewWorker(directions []Direction) *Worker {
+func NewWorker(kingdom, name string, directions []Direction) *Worker {
 	return &Worker{
-		Inventory:  make(map[string]int),
+		kingdom:    kingdom,
+		name:       name,
+		inventory:  make(map[string]int),
 		directions: directions,
 	}
+}
+
+func (w *Worker) UpdateStoreLog(ctx context.Context) error {
+	// Get inventory list
+	invList := w.InventoryList()
+
+	// Patch Pod
+	return k8s.PatchPod(ctx, w.kingdom, w.name, invList)
+}
+
+func (w *Worker) addInventory(ctx context.Context, item string, amount int) {
+	w.inventoryLock.Lock()
+	if _, exists := w.inventory[item]; !exists {
+		w.inventory[item] = amount
+	}
+	w.inventory[item] += amount
+	w.inventoryLock.Unlock()
+
+	// patch the pod with the new inventory
+	if err := w.UpdateStoreLog(ctx); err != nil {
+		slog.ErrorContext(ctx, "failed to update store log", "error", err)
+	}
+}
+
+func (w *Worker) ifEnoughInventory(ctx context.Context, item string, amount int) bool {
+	w.inventoryLock.RLock()
+	defer w.inventoryLock.RUnlock()
+	if _, exists := w.inventory[item]; !exists {
+		slog.DebugContext(ctx, "Attempted to check inventory for item that does not exist", "item", item)
+		return false
+	}
+	if w.inventory[item] < amount {
+		slog.DebugContext(ctx, "Not enough inventory for item", "item", item, "requested_amount", amount, "available_amount", w.inventory[item])
+		return false
+	}
+	return true
+}
+
+// returns true if item was removed from inventory, false if failure
+func (w *Worker) removeInventory(ctx context.Context, item string, amount int) bool {
+	if !w.ifEnoughInventory(ctx, item, amount) {
+		return false
+	}
+	w.inventoryLock.Lock()
+	w.inventory[item] -= amount
+	slog.DebugContext(ctx, "Removed inventory", "item", item, "amount", amount, "remaining_inventory", w.inventory[item])
+	w.inventoryLock.Unlock()
+
+	// patch the pod with the new inventory
+	if err := w.UpdateStoreLog(ctx); err != nil {
+		slog.ErrorContext(ctx, "failed to update store log", "error", err)
+	}
+	return true
 }
 
 // BuyRequest is the data payload received by another service to buy an item
@@ -100,8 +161,8 @@ func (w *Worker) buy(ctx context.Context, item ProductInput) bool {
 		return false
 	case http.StatusOK:
 		// if the request was successful, we assume the item was bought
-		w.Inventory[item.Product] += item.Amount
-		slog.InfoContext(ctx, "Purchased", "product", item.Product, "amount", item.Amount, "Inventory", w.Inventory)
+		w.addInventory(ctx, item.Product, item.Amount)
+		slog.InfoContext(ctx, "Purchased", "product", item.Product, "amount", item.Amount)
 		return true
 	default:
 		// any other non-200 status code is treated as an error
@@ -111,70 +172,60 @@ func (w *Worker) buy(ctx context.Context, item ProductInput) bool {
 }
 
 func (w *Worker) Sell(ctx context.Context, item string, quantity int) bool {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	if w.Inventory[item] < quantity {
-		return false
-	}
-	w.Inventory[item] -= quantity
-	slog.InfoContext(ctx, "Sold", "item", item, "amount", quantity, "Inventory", w.Inventory)
-	return true
+	return w.removeInventory(ctx, item, quantity)
 }
 
 func (w *Worker) AboveMinimum() bool {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.inventoryLock.RLock()
+	defer w.inventoryLock.RUnlock()
 	for _, direction := range w.directions {
-		if w.Inventory[direction.Product] < direction.Minimum {
+		if w.inventory[direction.Product] < direction.Minimum {
 			return false
 		}
 	}
 	return true
 }
 
-func (w *Worker) InventoryCount(item string) int {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	return w.Inventory[item]
-}
+func (w *Worker) InventoryList() map[string]string {
+	w.inventoryLock.RLock()
+	invList := make(map[string]int, len(w.inventory))
+	maps.Copy(invList, w.inventory)
+	w.inventoryLock.RUnlock()
 
-func (w *Worker) InventoryList() map[string]int {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	invList := make(map[string]int, len(w.Inventory))
-	maps.Copy(invList, w.Inventory)
-	return invList
+	invListStr := make(map[string]string, len(invList))
+	for item, amount := range invList {
+		invListStr[item] = fmt.Sprintf("%d", amount)
+	}
+
+	return invListStr
 }
 
 // produce increments the inventory of a product by a set amount
 func (w *Worker) produce(ctx context.Context, direction Direction) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-
 	// check that we have enough inventory to produce the product
 	for _, input := range direction.ProductInputList {
-		if w.Inventory[input.Product] < input.Amount {
+		if !w.ifEnoughInventory(ctx, input.Product, input.Amount) {
 			// attempt to buy the missing inputs
-			slog.DebugContext(ctx, "buying product input from store", "product", direction.Product, "input", input.Product, "store", input.Store, "amount", input.Amount)
 			if bought := w.buy(ctx, input); !bought {
 				slog.DebugContext(ctx, "failed to buy input", "product", input.Product, "store", input.Store, "amount", input.Amount)
 			}
+			slog.DebugContext(ctx, "Bought product input from store", "product", direction.Product, "input", input.Product, "store", input.Store, "amount", input.Amount)
+			// only let the workers do one action at a time, so return early
+			return
 		}
 	}
 
 	// use inputs to make the product
 	for _, input := range direction.ProductInputList {
-		// decrement the inventory of the input product
-		if w.Inventory[input.Product] < input.Amount {
-			slog.DebugContext(ctx, "not enough inventory to produce product", "product", direction.Product, "missing_input", input.Product, "required_amount", input.Amount)
-			return
+		if !w.removeInventory(ctx, input.Product, input.Amount) {
+			slog.WarnContext(ctx, "not enough inventory to produce product", "product", direction.Product, "input", input.Product, "amount", input.Amount)
+			return // if we can't remove the input, we can't produce the product
 		}
-		// decrement the inventory of the input product
-		w.Inventory[input.Product] -= input.Amount
 	}
 
-	w.Inventory[direction.Product] += direction.Amount
-	slog.InfoContext(ctx, "Produced", "product", direction.Product, "amount", direction.Amount, "inventory", w.Inventory)
+	// increment the inventory of the product. This is the worker producing the product
+	w.addInventory(ctx, direction.Product, direction.Amount)
+	slog.InfoContext(ctx, "Produced product", "product", direction.Product, "amount", direction.Amount)
 }
 
 // Work is the loop that will run the worker until the context is canceled
@@ -193,7 +244,7 @@ func (w *Worker) Work(ctx context.Context) {
 				}
 			}
 			// sleep for a second to prevent a busy loop
-			time.Sleep(1 * time.Second)
+			time.Sleep(1 * time.Second) // This could also be thought of as the time it takes for a worker to do a task (buy or produce)
 		}
 	}
 }
